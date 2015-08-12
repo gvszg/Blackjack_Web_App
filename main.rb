@@ -5,6 +5,28 @@ use Rack::Session::Cookie, :key => 'rack.session',
                            :path => '/',
                            :secret => 'djivbskderopfjk234jio2jsk'
 
+helpers do
+  def calculate_total(cards)
+    arr = cards.map {|value| value[1]}    
+    total = 0
+
+    arr.each do |value|
+      if value == "A"
+        total += 11
+      else
+        total += (value.to_i == 0 ? 10 : value.to_i)
+      end
+    end
+
+    # correct for Aces
+    arr.select{|value| value == "A"}.count.times do
+      total -= 10 if total > 21
+    end
+
+    total  
+  end
+end
+
 get '/' do
   if session[:player_name]
     redirect '/game'  
