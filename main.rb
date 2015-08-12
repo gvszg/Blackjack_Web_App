@@ -50,16 +50,19 @@ helpers do
   end
 
   def winner!(msg)
+    @play_again = true
     @show_hit_or_stay_buttons = false
     @success = "<strong>#{session[:player_name]} wins!</strong> #{msg}"
   end
 
   def loser!(msg)
+    @play_again = true
     @show_hit_or_stay_buttons = false
     @error = "<strong>#{session[:player_name]} loses!</strong> #{msg}"
   end
 
   def tie!(msg)
+    @play_again = true
     @show_hit_or_stay_buttons = false
     @success = "<strong>It's a tie!</strong> #{msg}"
   end
@@ -172,10 +175,14 @@ get '/game/compare' do
   elsif player_total > dealer_total
     winner!("#{session[:player_name]} stayed at #{player_total}, and the dealer stayed at #{dealer_total}!")
   else
-    winner!("Both #{session[:player_name]} and the dealer stayed at #{player_total}!")
+    tie!("Both #{session[:player_name]} and the dealer stayed at #{player_total}!")
   end
 
   erb :game  
+end
+
+get '/game_over' do
+  erb :game_over
 end
 
 
