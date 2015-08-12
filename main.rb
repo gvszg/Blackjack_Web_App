@@ -5,6 +5,9 @@ use Rack::Session::Cookie, :key => 'rack.session',
                            :path => '/',
                            :secret => 'djivbskderopfjk234jio2jsk'
 
+BLACKJACK_AMOUNT = 21
+DEALER_MIN_HIT = 17
+
 helpers do
   def calculate_total(cards)
     arr = cards.map {|value| value[1]}    
@@ -20,7 +23,7 @@ helpers do
 
     # correct for Aces
     arr.select{|value| value == "A"}.count.times do
-      total -= 10 if total > 21
+      total -= 10 if total > BLACKJACK_AMOUNT
     end
 
     total  
@@ -110,7 +113,7 @@ get '/game' do
 
   player_total = calculate_total(session[:player_cards])
 
-  if player_total == 21
+  if player_total == BLACKJACK_AMOUNT
     winner!("#{session[:player_name]} hits blackjack!") 
   end
 
@@ -122,9 +125,9 @@ post '/game/player/hit' do
 
   player_total = calculate_total(session[:player_cards])
 
-  if player_total == 21
+  if player_total == BLACKJACK_AMOUNT
     winner! ("#{session[:player_name]} hits blackjack!")
-  elsif player_total > 21
+  elsif player_total > BLACKJACK_AMOUNT
     loser!("#{session[:player_name]} busted at #{player_total}!")    
   end
 
@@ -145,11 +148,11 @@ get '/game/dealer' do
   # decision tree
   dealer_total = calculate_total(session[:dealer_cards])
 
-  if dealer_total == 21
+  if dealer_total == BLACKJACK_AMOUNT
     loser!("Dealer hits blackjack!")  
-  elsif dealer_total > 21
+  elsif dealer_total > BLACKJACK_AMOUNT
     winner!("Dealer busted at #{dealer_total}!") 
-  elsif dealer_total >= 17 
+  elsif dealer_total >= DEALER_MIN_HIT 
     # dealer stays
     redirect '/game/compare'
   else  
