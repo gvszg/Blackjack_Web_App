@@ -98,6 +98,8 @@ post '/new_player' do
 end
 
 get '/game' do
+  session[:turn] = session[:player_name]
+
   # create a deck and put it in session
   suits = %w[H D C S]
   values = %w[2 3 4 5 6 7 8 9 10 A J Q K]
@@ -143,6 +145,7 @@ post '/game/player/stay' do
 end
 
 get '/game/dealer' do
+  session[:turn] = "dealer"
   @show_hit_or_stay_buttons = false
 
   # decision tree
