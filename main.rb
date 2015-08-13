@@ -7,6 +7,7 @@ use Rack::Session::Cookie, :key => 'rack.session',
 
 BLACKJACK_AMOUNT = 21
 DEALER_MIN_HIT = 17
+INITIAL_POT_AMOUNT = 500
 
 helpers do
   def calculate_total(cards)
@@ -55,12 +56,14 @@ helpers do
   def winner!(msg)
     @play_again = true
     @show_hit_or_stay_buttons = false
+    session[:player_pot] = session[:player_pot] + session[:player_bet]
     @success = "<strong>#{session[:player_name]} wins!</strong> #{msg}"
   end
 
   def loser!(msg)
     @play_again = true
     @show_hit_or_stay_buttons = false
+    session[:player_pot] = session[:player_pot] - session[:player_bet]
     @error = "<strong>#{session[:player_name]} loses!</strong> #{msg}"
   end
 
@@ -84,6 +87,7 @@ get '/' do
 end
 
 get '/new_player' do
+  session[:player_pot] = INITIAL_POT_AMOUNT 
   erb :new_player
 end
 
@@ -94,7 +98,25 @@ post '/new_player' do
   end
 
   session[:player_name] = params[:player_name]
-  redirect '/game'
+  redirect '/bet'
+end
+
+get '/bet' do
+  session[:player_bet] = nil
+  erb :bet
+end
+
+post '/bet' do
+  if params[:bet_amount].nil? || params[:bet_amount].to_i == 0
+    @error = "Must make a bet!"
+    halt erb(:bet)
+  elsif params[:bet_amount].to_i > session[:player_pot] # this is integer
+    @error = "Bet amount cannot be greater than what you have => $#{session[:player_pot]}!"
+    halt erb(:bet)
+  else
+    session[:player_bet] = params[:bet_amount].to_i
+    redirect '/game'
+  end  
 end
 
 get '/game' do
