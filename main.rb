@@ -33,21 +33,21 @@ helpers do
   def card_image(card) # card = ['H', '4'] ...
     # suit:'H','D','C','S'
     suit = case card[0]
-      when 'H' then 'hearts'
-      when 'D' then 'diamonds'
-      when 'C' then 'clubs' 
-      when 'S' then 'spades'
-    end
+           when 'H' then 'hearts'
+           when 'D' then 'diamonds'
+           when 'C' then 'clubs' 
+           when 'S' then 'spades'
+           end
 
     # value:'2'..'10','Q','K','J','A'
     value = card[1]
     if ['J', 'Q', 'K', 'A'].include?(value)
       value = case card[1]
-        when 'J' then 'jack'
-        when 'Q' then 'queen'
-        when 'K' then 'king'
-        when 'A' then 'ace'
-      end  
+              when 'J' then 'jack'
+              when 'Q' then 'queen'
+              when 'K' then 'king'
+              when 'A' then 'ace'
+              end  
     end  
 
     "<img src='/images/cards/#{suit}_#{value}.jpg' class='card_image'>"
@@ -130,10 +130,11 @@ get '/game' do
   # deal cards
   session[:dealer_cards] = []
   session[:player_cards] = []
-  session[:dealer_cards] << session[:deck].pop
-  session[:player_cards] << session[:deck].pop
-  session[:dealer_cards] << session[:deck].pop
-  session[:player_cards] << session[:deck].pop
+  
+  2.times do 
+    session[:dealer_cards] << session[:deck].pop
+    session[:player_cards] << session[:deck].pop
+  end
 
   player_total = calculate_total(session[:player_cards])
 

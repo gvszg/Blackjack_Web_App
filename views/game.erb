@@ -25,15 +25,14 @@
 
 
   <div class="well" id="player_cards">
-    <h4><%= session[:player_name] %>'s cards:</h4>
+    <h4><%= session[:player_name] %>'s cards: <%= session[:player_name] %> has <strong><%= calculate_total(session[:player_cards]) %></strong></h4>
       <% session[:player_cards].each do |card| %>
         <%= card_image(card) %>
       <% end %>
 
     <p id="player_choose">
       What would you like to do?
-      <%= session[:player_name] %> has <strong><%= calculate_total(session[:player_cards]) %></strong>
-
+      
       <% if @show_hit_or_stay_buttons %>
         <form id="hit_form" action="/game/player/hit" method="post">
           <input type="submit" class="btn btn-success" value="Hit"/>
