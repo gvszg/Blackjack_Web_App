@@ -10,3 +10,8 @@ form#stay_form {
 img.card_image {
   margin: 0px 10px 5px 0px;
 }
+
+div.well {
+  background-color: #8FBC8F;
+  border-radius: 25px;
+}
